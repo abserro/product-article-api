@@ -21,8 +21,18 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	/*Spring-Boot-PostgreSQL*/
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
 	/*Swagger*/
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+	/*Validation*/
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+
+	/*PostgreSQL*/
+	implementation 'org.postgresql:postgresql'
 }
 
 tasks.named('test') {
