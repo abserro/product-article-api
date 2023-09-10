@@ -1,8 +1,9 @@
 package com.example.apiApplication.entity;
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -11,8 +12,7 @@ public class ArticleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_Id")
     private Long productId;
     private String title;
     private String content;

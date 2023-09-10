@@ -1,6 +1,7 @@
 package com.example.apiApplication.entity;
 
-import jakarta.persistence.*;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "product")
@@ -10,7 +11,6 @@ public class ProductEntity {
     private Long id;
     private String title;
     private String description;
-
     private Double cost;
 
     public ProductEntity() {
