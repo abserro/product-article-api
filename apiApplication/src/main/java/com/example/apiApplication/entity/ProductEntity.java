@@ -2,6 +2,10 @@ package com.example.apiApplication.entity;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "product")
@@ -9,8 +13,16 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Title is required")
+    @Size(max = 255, message = "Title cannot be longer than 255 characters")
     private String title;
+
+    @NotBlank(message = "Description is required")
     private String description;
+
+    @NotNull(message = "Cost is required")
+    @Positive(message = "Cost must be a positive number")
     private Double cost;
 
     public ProductEntity() {

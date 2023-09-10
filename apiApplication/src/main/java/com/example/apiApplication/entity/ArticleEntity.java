@@ -1,9 +1,11 @@
 package com.example.apiApplication.entity;
 
-//import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -12,10 +14,17 @@ public class ArticleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JoinColumn(name = "product_Id")
+
+    @NotNull(message = "productId is required")
     private Long productId;
+
+    @NotBlank(message = "Title is required")
+    @Size(max = 255, message = "Title cannot be longer than 255 characters")
     private String title;
+
+    @NotBlank(message = "Content is required")
     private String content;
+
     @CreationTimestamp
     @Column(name = "date_created")
     private Date dateCreated;
