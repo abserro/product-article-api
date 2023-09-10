@@ -9,6 +9,4 @@ import java.util.List;
 
 @Repository
 public interface IArticleRepository extends JpaRepository<ArticleEntity, Long> {
-    List<ArticleEntity> findByOrderByIdAsc();
-    List<ArticleEntity> findByOrderByIdDesc();
 }

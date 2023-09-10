@@ -22,13 +22,13 @@ public class ProductController {
         this.productService = new ProductService(productRepository, articleRepository);
     }
 
-    @Operation(summary = "Post Request (new product)")
+    @Operation(summary = "Create a new Product")
     @PostMapping()
     public ProductEntity createProduct(@RequestBody ProductEntity product) {
         return productService.createProduct(product);
     }
 
-    @Operation(summary = "Get Request by productID")
+    @Operation(summary = "Get product id")
     @GetMapping("{id}")
     public ResponseEntity<ProductEntity> getProductById(@PathVariable long id) {
         ProductEntity productEntity = productService.getProductById(id);
@@ -37,7 +37,8 @@ public class ProductController {
         }
         return ResponseEntity.notFound().build();
     }
-    @Operation(summary = "Put Request by productID")
+
+    @Operation(summary = "Update product by id")
     @PutMapping("{id}")
     public ResponseEntity<ProductEntity> updateProductById(@PathVariable long id, @RequestBody ProductEntity updateProduct) {
         ProductEntity productEntity = productService.updateProductById(id, updateProduct);
@@ -47,7 +48,7 @@ public class ProductController {
         return ResponseEntity.notFound().build();
     }
 
-    @Operation(summary = "Delete Request by productID")
+    @Operation(summary = "Delete product by id")
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteProductById(@PathVariable long id) {
         if (productService.deleteProductById(id)) {
@@ -57,62 +58,33 @@ public class ProductController {
         }
     }
 
-    @Operation(summary = "Get all products by id asc")
-    @GetMapping("id/asc")
-    public List<ProductEntity> getAllProductsByIdAsc() {
-        return productService.getAllProductsByIdAsc();
+    @Operation(summary = "Sorting all products (asc/desc) by field name")
+    @GetMapping
+    public List<ProductEntity> getProducts(@RequestParam(required = false, defaultValue = "id") String sortField,
+                                           @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+        return productService.getProducts(sortField, sortDirection);
     }
 
-    @Operation(summary = "Get all products by id desc")
-    @GetMapping("id/desc")
-    public List<ProductEntity> getAllProductsByIdDesc() {
-        return productService.getAllProductsByIdDesc();
-    }
-
-    @Operation(summary = "Get all products by title asc")
-    @GetMapping("title/asc")
-    public List<ProductEntity> getAllProductsByTitleAsc() {
-        return productService.getAllProductsByTitleAsc();
-    }
-
-    @Operation(summary = "Get all products by title asc")
-    @GetMapping("title/desc")
-    public List<ProductEntity> getAllProductsByTitleDesc() {
-        return productService.getAllProductsByTitleDesc();
-    }
-
-    @Operation(summary = "Get all products by cost asc")
-    @GetMapping("cost/asc")
-    public List<ProductEntity> getAllProductsByCostAsc() {
-        return productService.getAllProductsByCostAsc();
-    }
-
-    @Operation(summary = "Get all products by cost asc")
-    @GetMapping("cost/desc")
-    public List<ProductEntity> getAllProductsByCostDesc() {
-        return productService.getAllProductsByCostDesc();
-    }
-
-    @Operation(summary = "Get all article by product_id asc")
-    @GetMapping("article/{productId}/asc")
-    public List<ArticleEntity> getAllArticleByProductIdAsc(@PathVariable long productId) {
-        return productService.getAllArticleByProductIdAsc(productId);
-    }
-
-    @Operation(summary = "Get all article by product_id desc")
-    @GetMapping("article/{productId}/desc")
-    public List<ArticleEntity> getAllArticleByProductIdDesc(@PathVariable long productId) {
-        return productService.getAllArticleByProductIdDesc(productId);
+    @Operation(summary = "Get all article by product_id (asc/desc)")
+    @GetMapping("article/{productId}")
+    public List<ArticleEntity> getAllArticleByProductId(@PathVariable long productId,
+                                                        @RequestParam(required = false, defaultValue = "id") String sortField,
+                                                        @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+        return productService.getAllArticleByProductId(productId, sortField, sortDirection);
     }
 
     @Operation(summary = "Get all product by filter cost (min, max)")
-    @GetMapping("cost-range")
-    public List<ProductEntity> getAllProductByCostRange(@RequestParam double min, @RequestParam double max) {
-        return productService.getAllProductByCostRange(min, max);
+    @GetMapping("cost/range")
+    public List<ProductEntity> getAllProductByCostRange(@RequestParam double min,
+                                                        @RequestParam double max,
+                                                        @RequestParam(required = false, defaultValue = "id") String sortField,
+                                                        @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+        return productService.getAllProductByCostRange(min, max, sortField, sortDirection);
     }
 
+    @Operation(summary = "Get products by title")
     @GetMapping("findByTitle/{title}")
-    public List<ProductEntity> getAllProductByTitle(@PathVariable String title){
+    public List<ProductEntity> getAllProductByTitle(@PathVariable String title) {
         return productService.getAllProductByTitle(title);
     }
 }

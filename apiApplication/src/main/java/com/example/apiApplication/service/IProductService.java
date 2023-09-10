@@ -13,14 +13,8 @@ public interface IProductService {
     public ProductEntity updateProductById(long id, ProductEntity entity);
     public ProductEntity createProduct(ProductEntity product);
     public Boolean deleteProductById(long id);
-    public List<ProductEntity> getAllProductsByIdAsc();
-    public List<ProductEntity> getAllProductsByIdDesc();
-    public List<ProductEntity> getAllProductsByTitleAsc();
-    public List<ProductEntity> getAllProductsByTitleDesc();
-    public List<ProductEntity> getAllProductsByCostAsc();
-    public List<ProductEntity> getAllProductsByCostDesc();
-    public List<ProductEntity> getAllProductByCostRange(double min, double max);
+    public List<ProductEntity> getAllProductByCostRange(double min, double max, String sortField, String sortDirection);
     public List<ProductEntity> getAllProductByTitle(String title);
-    public List<ArticleEntity> getAllArticleByProductIdAsc(long productId);
-    public List<ArticleEntity> getAllArticleByProductIdDesc(long productId);
+    public List<ArticleEntity> getAllArticleByProductId(long productId, String sortField, String sortDirection);
+    public List<ProductEntity> getProducts(String sortField, String sortDirection);
 }
