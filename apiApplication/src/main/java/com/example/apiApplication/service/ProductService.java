@@ -18,6 +18,18 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductEntity getProductById(long id) {
+        return productRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public ProductEntity updateProductById(long id, ProductEntity updateProduct) {
+        ProductEntity productEntity = productRepository.findById(id).orElse(null);
+        if (productEntity != null) {
+            productEntity.setTitle(updateProduct.getTitle());
+            productEntity.setDescription(updateProduct.getDescription());
+            productEntity.setCost(updateProduct.getCost());
+            return productRepository.save(productEntity);
+        }
         return null;
     }
 
@@ -47,13 +59,13 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductEntity updateProduct(ProductEntity product) {
-        return null;
-    }
-
-    @Override
     public Boolean deleteProductById(long id) {
-        return null;
+        ProductEntity product = productRepository.findById(id).orElse(null);
+        if (product != null) {
+            productRepository.delete(product);
+            return true;
+        }
+        return false;
     }
 
     @Override

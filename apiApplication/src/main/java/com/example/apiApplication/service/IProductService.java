@@ -10,13 +10,13 @@ import java.util.List;
 @Service
 public interface IProductService {
     public ProductEntity getProductById(long id);
+    public ProductEntity updateProductById(long id, ProductEntity entity);
+    public ProductEntity createProduct(ProductEntity product);
+    public Boolean deleteProductById(long id);
     public ProductEntity getProductsAsc();
     public ProductEntity getProductsDesc();
     public ProductEntity getProductByName(String name);
     public ProductEntity getProductByCost(Double cost);
-    public ProductEntity createProduct(ProductEntity product);
-    public ProductEntity updateProduct(ProductEntity product);
-    public Boolean deleteProductById(long id);
     public List<ArticleEntity> getArticleByProductIdDesc(long id);
     public List<ArticleEntity> getArticleByProductIdAsc(long id);
     public List<ArticleEntity> getProductNoneArticle(); //?
