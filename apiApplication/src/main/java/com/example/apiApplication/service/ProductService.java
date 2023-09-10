@@ -5,6 +5,7 @@ import com.example.apiApplication.entity.ProductEntity;
 import com.example.apiApplication.repository.IArticleRepository;
 import com.example.apiApplication.repository.IProductRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductService implements IProductService {
@@ -34,23 +35,65 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductEntity getProductsAsc() {
-        return null;
+    public List<ProductEntity> getAllProductsByIdAsc() {
+        return productRepository.findByOrderByIdAsc();
     }
 
     @Override
-    public ProductEntity getProductsDesc() {
-        return null;
+    public List<ProductEntity> getAllProductsByIdDesc() {
+        return productRepository.findByOrderByIdDesc();
     }
 
     @Override
-    public ProductEntity getProductByName(String name) {
-        return null;
+    public List<ProductEntity> getAllProductsByTitleAsc() {
+        return productRepository.findByOrderByTitleAsc();
     }
 
     @Override
-    public ProductEntity getProductByCost(Double cost) {
-        return null;
+    public List<ProductEntity> getAllProductsByTitleDesc() {
+        return productRepository.findByOrderByTitleDesc();
+    }
+
+    @Override
+    public List<ProductEntity> getAllProductsByCostAsc() {
+        return productRepository.findByOrderByCostAsc();
+    }
+
+    @Override
+    public List<ProductEntity> getAllProductsByCostDesc() {
+        return productRepository.findByOrderByCostDesc();
+    }
+
+    @Override
+    public List<ProductEntity> getAllProductByCostRange(double min, double max) {
+        return productRepository.findByCostBetween(min, max);
+    }
+
+    @Override
+    public List<ProductEntity> getAllProductByTitle(String title) {
+        return productRepository.findByTitle(title);
+    }
+
+    @Override
+    public List<ArticleEntity> getAllArticleByProductIdAsc(long productId) {
+        List<ArticleEntity> articles = new ArrayList<>();
+        for (ArticleEntity article : articleRepository.findByOrderByIdAsc()) {
+            if (article.getProductId() == productId) {
+                articles.add(article);
+            }
+        }
+        return articles;
+    }
+
+    @Override
+    public List<ArticleEntity> getAllArticleByProductIdDesc(long productId) {
+        List<ArticleEntity> articles = new ArrayList<>();
+        for (ArticleEntity article : articleRepository.findByOrderByIdDesc()) {
+            if (article.getProductId() == productId) {
+                articles.add(article);
+            }
+        }
+        return articles;
     }
 
     @Override
@@ -66,30 +109,5 @@ public class ProductService implements IProductService {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public List<ArticleEntity> getArticleByProductIdDesc(long id) {
-        return null;
-    }
-
-    @Override
-    public List<ArticleEntity> getArticleByProductIdAsc(long id) {
-        return null;
-    }
-
-    @Override
-    public List<ArticleEntity> getProductNoneArticle() {
-        return null;
-    }
-
-    @Override
-    public List<ArticleEntity> getProductsByCostAsc() {
-        return null;
-    }
-
-    @Override
-    public List<ArticleEntity> getProductsByCostDesc() {
-        return null;
     }
 }

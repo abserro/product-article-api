@@ -13,13 +13,14 @@ public interface IProductService {
     public ProductEntity updateProductById(long id, ProductEntity entity);
     public ProductEntity createProduct(ProductEntity product);
     public Boolean deleteProductById(long id);
-    public ProductEntity getProductsAsc();
-    public ProductEntity getProductsDesc();
-    public ProductEntity getProductByName(String name);
-    public ProductEntity getProductByCost(Double cost);
-    public List<ArticleEntity> getArticleByProductIdDesc(long id);
-    public List<ArticleEntity> getArticleByProductIdAsc(long id);
-    public List<ArticleEntity> getProductNoneArticle(); //?
-    public List<ArticleEntity> getProductsByCostAsc();
-    public List<ArticleEntity> getProductsByCostDesc();
+    public List<ProductEntity> getAllProductsByIdAsc();
+    public List<ProductEntity> getAllProductsByIdDesc();
+    public List<ProductEntity> getAllProductsByTitleAsc();
+    public List<ProductEntity> getAllProductsByTitleDesc();
+    public List<ProductEntity> getAllProductsByCostAsc();
+    public List<ProductEntity> getAllProductsByCostDesc();
+    public List<ProductEntity> getAllProductByCostRange(double min, double max);
+    public List<ProductEntity> getAllProductByTitle(String title);
+    public List<ArticleEntity> getAllArticleByProductIdAsc(long productId);
+    public List<ArticleEntity> getAllArticleByProductIdDesc(long productId);
 }
