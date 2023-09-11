@@ -103,6 +103,17 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    @Operation(summary = "Get products by word in description")
+    @GetMapping("/findBy/{phrase}")
+    public ResponseEntity<List<ProductEntity>> getProductByPhraseDescription(@PathVariable String phrase,
+                                                                             @RequestParam(required = false, defaultValue = "id") String sortField,
+                                                                             @RequestParam(required = false, defaultValue = "asc") String sortDirection){
+        if (phrase.isEmpty())
+            return ResponseEntity.noContent().build();
+        List<ProductEntity> products = productService.getProductByPhraseDescription(phrase, sortField, sortDirection);
+        return ResponseEntity.ok(products);
+    }
+
     private Boolean isFieldValid(String field) {
         List<String> fields = Arrays.asList("id", "title", "description", "cost");
         return fields.contains(field.toLowerCase());

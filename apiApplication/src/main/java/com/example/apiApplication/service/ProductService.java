@@ -49,6 +49,11 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public List<ProductEntity> getProducts(String sortField, String sortDirection) {
+        return productRepository.findAll(getSort(sortField, sortDirection));
+    }
+
+    @Override
     public List<ProductEntity> getProductByCostRange(double min, double max, String sortField, String sortDirection) {
         return productRepository.findByCostBetween(min, max, getSort(sortField, sortDirection));
     }
@@ -69,8 +74,13 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductEntity> getProducts(String sortField, String sortDirection) {
-        return productRepository.findAll(getSort(sortField, sortDirection));
+    public List<ProductEntity> getProductByPhraseDescription(String phrase, String sortField, String sortDirection) {
+        List<ProductEntity> products = new ArrayList<>();
+        for (ProductEntity product : productRepository.findAll(getSort(sortField, sortDirection))) {
+            if (product.getDescription().contains(phrase.toLowerCase()))
+                products.add(product);
+        }
+        return products;
     }
 
     private Sort getSort(String sortField, String sortDirection) {
