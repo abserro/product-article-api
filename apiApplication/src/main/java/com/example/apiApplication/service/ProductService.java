@@ -25,13 +25,13 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductEntity updateProductById(long id, ProductEntity updateProduct) {
-        ProductEntity productEntity = productRepository.findById(id).orElse(null);
-        if (productEntity == null)
+        ProductEntity product = productRepository.findById(id).orElse(null);
+        if (product == null)
             return null;
-        productEntity.setTitle(updateProduct.getTitle());
-        productEntity.setDescription(updateProduct.getDescription());
-        productEntity.setCost(updateProduct.getCost());
-        return productRepository.save(productEntity);
+        product.setTitle(updateProduct.getTitle());
+        product.setDescription(updateProduct.getDescription());
+        product.setCost(updateProduct.getCost());
+        return productRepository.save(product);
     }
 
     @Override
