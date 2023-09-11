@@ -99,18 +99,20 @@ public class ArticleController {
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleProductException(ArticleNotFoundException e){
+        Date currentDate = new Date();
         ErrorResponse response = new ErrorResponse(
                 "The article with this id wasn't found!",
-                System.currentTimeMillis()
+                currentDate
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleProductException(ProductNotFoundException e){
+        Date currentDate = new Date();
         ErrorResponse response = new ErrorResponse(
                 "The product with this id wasn't found!",
-                System.currentTimeMillis()
+                currentDate
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }

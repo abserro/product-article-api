@@ -1,14 +1,15 @@
 package com.example.apiApplication.util;
 
+import java.util.Date;
+
 public class ErrorResponse {
     private String message;
-    private long timestamp;
+    private Date date;
 
-    public ErrorResponse(String message, long timestamp) {
+    public ErrorResponse(String message, Date date) {
         this.message = message;
-        this.timestamp = timestamp;
+        this.date = date;
     }
-
 
     public String getMessage() {
         return message;
@@ -18,11 +19,11 @@ public class ErrorResponse {
         this.message = message;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public Date getDate() {
+        return date;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

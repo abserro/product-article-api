@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ArticleService implements IArticleService {
-    private final IArticleRepository articleRepository ;
+    private final IArticleRepository articleRepository;
     private final IProductRepository productRepository;
 
     public ArticleService(IArticleRepository articleRepository, IProductRepository productRepository) {
@@ -23,7 +23,7 @@ public class ArticleService implements IArticleService {
 
     @Override
     public ArticleEntity createArticle(ArticleEntity article) {
-        productRepository.findById(article.getProductId()).orElseThrow(ProductNotFoundException::new);
+        productRepository.findById(article.getProduct().getId()).orElseThrow(ProductNotFoundException::new);
         return articleRepository.save(article);
     }
 
@@ -35,10 +35,10 @@ public class ArticleService implements IArticleService {
     @Override
     public ArticleEntity updateArticleById(long id, ArticleEntity updateArticle) {
         ArticleEntity article = articleRepository.findById(id).orElseThrow(ArticleNotFoundException::new);
-        ProductEntity product = productRepository.findById(updateArticle.getProductId()).orElseThrow(ProductNotFoundException::new);
+        ProductEntity product = productRepository.findById(updateArticle.getProduct().getId()).orElseThrow(ProductNotFoundException::new);
         article.setTitle(updateArticle.getTitle());
         article.setContent(updateArticle.getContent());
-        article.setProductId(product.getId());
+        article.getProduct().setId(product.getId());
         return articleRepository.save(article);
     }
 
@@ -62,10 +62,9 @@ public class ArticleService implements IArticleService {
         Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(direction, sortField);
         List<ArticleEntity> articles = new ArrayList<>();
-        for(ArticleEntity article : articleRepository.findAll(sort)) {
-            if (article.getProductId() == productId)
+        for (ArticleEntity article : articleRepository.findAll(sort))
+            if (article.getProduct().getId() == productId)
                 articles.add(article);
-        }
         return articles;
     }
 

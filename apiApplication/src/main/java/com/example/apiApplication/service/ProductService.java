@@ -20,13 +20,20 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public ProductEntity createProduct(ProductEntity product) {
+        return productRepository.save(product);
+    }
+
+    @Override
     public ProductEntity getProductById(long id) {
-        return productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+        return productRepository.findById(id)
+                .orElseThrow(ProductNotFoundException::new);
     }
 
     @Override
     public ProductEntity updateProductById(long id, ProductEntity updateProduct) {
-        ProductEntity product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+        ProductEntity product = productRepository.findById(id)
+                .orElseThrow(ProductNotFoundException::new);
         product.setTitle(updateProduct.getTitle());
         product.setDescription(updateProduct.getDescription());
         product.setCost(updateProduct.getCost());
@@ -34,26 +41,28 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductEntity> getAllProductByCostRange(double min, double max, String sortField, String sortDirection) {
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortField);
-        return productRepository.findByCostBetween(min, max, sort);
+    public Boolean deleteProductById(long id) {
+        ProductEntity product = productRepository.findById(id)
+                .orElseThrow(ProductNotFoundException::new);
+        productRepository.delete(product);
+        return true;
     }
 
     @Override
-    public List<ProductEntity> getAllProductByTitle(String title, String sortField, String sortDirection) {
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortField);
-        return productRepository.findByTitle(title, sort);
+    public List<ProductEntity> getProductByCostRange(double min, double max, String sortField, String sortDirection) {
+        return productRepository.findByCostBetween(min, max, getSort(sortField, sortDirection));
     }
 
     @Override
-    public List<ArticleEntity> getAllArticleByProductId(long productId, String sortField, String sortDirection) {
+    public List<ProductEntity> getProductByTitle(String title, String sortField, String sortDirection) {
+        return productRepository.findByTitle(title, getSort(sortField, sortDirection));
+    }
+
+    @Override
+    public List<ArticleEntity> getArticleByProductId(long productId, String sortField, String sortDirection) {
         List<ArticleEntity> articles = new ArrayList<>();
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortField);
-        for (ArticleEntity article : articleRepository.findAll(sort)) {
-            if (article.getProductId() == productId)
+        for (ArticleEntity article : articleRepository.findAll(getSort(sortField, sortDirection))) {
+            if (article.getProduct().getId() == productId)
                 articles.add(article);
         }
         return articles;
@@ -61,20 +70,11 @@ public class ProductService implements IProductService {
 
     @Override
     public List<ProductEntity> getProducts(String sortField, String sortDirection) {
+        return productRepository.findAll(getSort(sortField, sortDirection));
+    }
+
+    private Sort getSort(String sortField, String sortDirection) {
         Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortField);
-        return productRepository.findAll(sort);
-    }
-
-    @Override
-    public ProductEntity createProduct(ProductEntity product) {
-        return productRepository.save(product);
-    }
-
-    @Override
-    public Boolean deleteProductById(long id) {
-        ProductEntity product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);;
-        productRepository.delete(product);
-        return true;
+        return Sort.by(direction, sortField);
     }
 }
