@@ -5,7 +5,10 @@ import com.example.apiApplication.entity.ProductEntity;
 import com.example.apiApplication.repository.IArticleRepository;
 import com.example.apiApplication.repository.IProductRepository;
 import com.example.apiApplication.service.ProductService;
+import com.example.apiApplication.util.ErrorResponse;
+import com.example.apiApplication.util.ProductNotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,5 +89,14 @@ public class ProductController {
     @GetMapping("findByTitle/{title}")
     public List<ProductEntity> getAllProductByTitle(@PathVariable String title) {
         return productService.getAllProductByTitle(title);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse> handleProductException(ProductNotFoundException e){
+        ErrorResponse response = new ErrorResponse(
+                "The product with this id wasn't found!",
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

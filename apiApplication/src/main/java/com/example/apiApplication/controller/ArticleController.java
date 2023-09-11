@@ -1,12 +1,15 @@
 package com.example.apiApplication.controller;
 
 import com.example.apiApplication.entity.ArticleEntity;
-import com.example.apiApplication.entity.ArticleEntity;
 import com.example.apiApplication.repository.IArticleRepository;
 import com.example.apiApplication.repository.IProductRepository;
 import com.example.apiApplication.service.ArticleService;
+import com.example.apiApplication.util.ArticleNotFoundException;
+import com.example.apiApplication.util.ErrorResponse;
+import com.example.apiApplication.util.ProductNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,5 +67,14 @@ public class ArticleController {
     public List<ArticleEntity> getArticles(@RequestParam(required = false, defaultValue = "id") String sortField,
                                            @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
         return articleService.getArticles(sortField, sortDirection);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse> handleProductException(ArticleNotFoundException e){
+        ErrorResponse response = new ErrorResponse(
+                "The article with this id wasn't found!",
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

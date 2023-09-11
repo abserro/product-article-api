@@ -4,6 +4,7 @@ import com.example.apiApplication.entity.ArticleEntity;
 import com.example.apiApplication.entity.ProductEntity;
 import com.example.apiApplication.repository.IArticleRepository;
 import com.example.apiApplication.repository.IProductRepository;
+import com.example.apiApplication.util.ProductNotFoundException;
 import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
@@ -20,14 +21,12 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductEntity getProductById(long id) {
-        return productRepository.findById(id).orElse(null);
+        return productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
     }
 
     @Override
     public ProductEntity updateProductById(long id, ProductEntity updateProduct) {
-        ProductEntity product = productRepository.findById(id).orElse(null);
-        if (product == null)
-            return null;
+        ProductEntity product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
         product.setTitle(updateProduct.getTitle());
         product.setDescription(updateProduct.getDescription());
         product.setCost(updateProduct.getCost());
@@ -60,8 +59,6 @@ public class ProductService implements IProductService {
 
     @Override
     public List<ProductEntity> getProducts(String sortField, String sortDirection) {
-        if (sortDirection != null && sortField != null)
-            return null;
         Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(direction, sortField);
         return productRepository.findAll(sort);
@@ -74,11 +71,8 @@ public class ProductService implements IProductService {
 
     @Override
     public Boolean deleteProductById(long id) {
-        ProductEntity product = productRepository.findById(id).orElse(null);
-        if (product != null) {
-            productRepository.delete(product);
-            return true;
-        }
-        return false;
+        ProductEntity product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);;
+        productRepository.delete(product);
+        return true;
     }
 }
