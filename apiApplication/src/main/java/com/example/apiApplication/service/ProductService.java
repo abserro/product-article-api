@@ -41,8 +41,10 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductEntity> getAllProductByTitle(String title) {
-        return productRepository.findByTitle(title);
+    public List<ProductEntity> getAllProductByTitle(String title, String sortField, String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortField);
+        return productRepository.findByTitle(title, sort);
     }
 
     @Override

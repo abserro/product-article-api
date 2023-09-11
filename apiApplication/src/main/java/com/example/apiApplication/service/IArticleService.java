@@ -3,6 +3,7 @@ package com.example.apiApplication.service;
 import com.example.apiApplication.entity.ArticleEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -16,4 +17,10 @@ public interface IArticleService {
     boolean deleteArticleById(long id);
 
     List<ArticleEntity> getArticles(String sortField, String sortDirection);
+
+    List<ArticleEntity> getArticlesByProductId(long productId, String sortField, String sortDirection);
+
+    List<ArticleEntity> getArticlesByDateCreated(Date min, Date max, String sortField, String sortDirection);
+
+    List<ArticleEntity> getArticlesByTitle(String title, String sortField, String sortDirection);
 }

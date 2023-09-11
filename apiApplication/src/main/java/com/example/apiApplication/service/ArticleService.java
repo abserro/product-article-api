@@ -5,8 +5,11 @@ import com.example.apiApplication.entity.ProductEntity;
 import com.example.apiApplication.repository.IArticleRepository;
 import com.example.apiApplication.repository.IProductRepository;
 import com.example.apiApplication.util.ArticleNotFoundException;
+import com.example.apiApplication.util.ProductNotFoundException;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ArticleService implements IArticleService {
@@ -20,6 +23,7 @@ public class ArticleService implements IArticleService {
 
     @Override
     public ArticleEntity createArticle(ArticleEntity article) {
+        productRepository.findById(article.getProductId()).orElseThrow(ProductNotFoundException::new);
         return articleRepository.save(article);
     }
 
@@ -31,9 +35,10 @@ public class ArticleService implements IArticleService {
     @Override
     public ArticleEntity updateArticleById(long id, ArticleEntity updateArticle) {
         ArticleEntity article = articleRepository.findById(id).orElseThrow(ArticleNotFoundException::new);
+        ProductEntity product = productRepository.findById(updateArticle.getProductId()).orElseThrow(ProductNotFoundException::new);
         article.setTitle(updateArticle.getTitle());
         article.setContent(updateArticle.getContent());
-        article.setProductId(updateArticle.getProductId());
+        article.setProductId(product.getId());
         return articleRepository.save(article);
     }
 
@@ -49,5 +54,32 @@ public class ArticleService implements IArticleService {
         Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(direction, sortField);
         return articleRepository.findAll(sort);
+    }
+
+    @Override
+    public List<ArticleEntity> getArticlesByProductId(long productId, String sortField, String sortDirection) {
+        productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortField);
+        List<ArticleEntity> articles = new ArrayList<>();
+        for(ArticleEntity article : articleRepository.findAll(sort)) {
+            if (article.getProductId() == productId)
+                articles.add(article);
+        }
+        return articles;
+    }
+
+    @Override
+    public List<ArticleEntity> getArticlesByDateCreated(Date min, Date max, String sortField, String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortField);
+        return articleRepository.findByDateCreatedBetween(min, max, sort);
+    }
+
+    @Override
+    public List<ArticleEntity> getArticlesByTitle(String title, String sortField, String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortField);
+        return articleRepository.findByTitle(title, sort);
     }
 }

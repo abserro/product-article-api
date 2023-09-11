@@ -69,8 +69,8 @@ public class ProductController {
     }
 
     @Operation(summary = "Get all article by product_id (asc/desc)")
-    @GetMapping("article/{productId}")
-    public List<ArticleEntity> getAllArticleByProductId(@PathVariable long productId,
+    @GetMapping("article/{product_id}")
+    public List<ArticleEntity> getAllArticleByProductId(@PathVariable(name = "product_id") long productId,
                                                         @RequestParam(required = false, defaultValue = "id") String sortField,
                                                         @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
         return productService.getAllArticleByProductId(productId, sortField, sortDirection);
@@ -87,8 +87,10 @@ public class ProductController {
 
     @Operation(summary = "Get products by title")
     @GetMapping("findByTitle/{title}")
-    public List<ProductEntity> getAllProductByTitle(@PathVariable String title) {
-        return productService.getAllProductByTitle(title);
+    public List<ProductEntity> getAllProductByTitle(@PathVariable String title,
+                                                    @RequestParam(required = false, defaultValue = "id") String sortField,
+                                                    @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+        return productService.getAllProductByTitle(title, sortField, sortDirection);
     }
 
     @ExceptionHandler

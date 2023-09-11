@@ -14,7 +14,7 @@ public interface IProductService {
     public ProductEntity createProduct(ProductEntity product);
     public Boolean deleteProductById(long id);
     public List<ProductEntity> getAllProductByCostRange(double min, double max, String sortField, String sortDirection);
-    public List<ProductEntity> getAllProductByTitle(String title);
+    public List<ProductEntity> getAllProductByTitle(String title, String sortField, String sortDirection);
     public List<ArticleEntity> getAllArticleByProductId(long productId, String sortField, String sortDirection);
     public List<ProductEntity> getProducts(String sortField, String sortDirection);
 }

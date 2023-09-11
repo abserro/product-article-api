@@ -1,5 +1,6 @@
 package com.example.apiApplication.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -59,5 +60,9 @@ public class ArticleEntity {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
     }
 }

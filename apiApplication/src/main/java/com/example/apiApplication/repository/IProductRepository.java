@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     List<ProductEntity> findByCostBetween(double min, double max, Sort sort);
-    List<ProductEntity> findByTitle(String title);
+    List<ProductEntity> findByTitle(String title, Sort sort);
 }
