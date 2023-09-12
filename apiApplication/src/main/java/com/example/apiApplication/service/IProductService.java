@@ -15,13 +15,14 @@ public interface IProductService {
     ProductEntity createProduct(ProductEntity product);
 
     Boolean deleteProductById(long id);
+
     List<ProductEntity> getProducts(String sortField, String sortDirection);
 
-    List<ProductEntity> getProductByCostRange(double min, double max, String sortField, String sortDirection);
+    List<ProductEntity> getProductsByCostRange(double min, double max, String sortField, String sortDirection);
 
-    List<ProductEntity> getProductByTitle(String title, String sortField, String sortDirection);
+    List<ProductEntity> getProductsByTitle(String title, String sortField, String sortDirection);
 
-    List<ArticleEntity> getArticleByProductId(long productId, String sortField, String sortDirection);
+    List<ArticleEntity> getArticlesByProductId(long productId, String sortField, String sortDirection);
 
-    List<ProductEntity> getProductByPhraseDescription(String phrase, String sortField, String sortDirection);
+    List<ProductEntity> getProductsByPhraseDescription(String phrase, String sortField, String sortDirection);
 }

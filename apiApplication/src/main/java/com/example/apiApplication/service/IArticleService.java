@@ -20,7 +20,9 @@ public interface IArticleService {
 
     List<ArticleEntity> getArticlesByProductId(long productId, String sortField, String sortDirection);
 
-    List<ArticleEntity> getArticlesByDateCreated(Date min, Date max, String sortField, String sortDirection);
+    List<ArticleEntity> getArticlesByDateCreated(Date dateStart, Date dateEnd, String sortField, String sortDirection);
 
     List<ArticleEntity> getArticlesByTitle(String title, String sortField, String sortDirection);
+
+    List<ArticleEntity> getArticlesByPhraseContent(String phrase, String sortField, String sortDirection);
 }

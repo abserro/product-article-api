@@ -1,5 +1,7 @@
 package com.example.apiApplication.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -19,13 +21,9 @@ public class ArticleEntity {
     @Size(max = 255, message = "Title cannot be longer than 255 characters")
     private String title;
 
-//    @NotNull(message = "Product id is required")
-//    @Column(name = "product_id")
-//    private long productId;
-
-    @ManyToOne
+    @ManyToOne()
     @NotNull(message = "Product id is required")
-    @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
     private ProductEntity product;
 
     @NotBlank(message = "Content is required")
@@ -39,6 +37,13 @@ public class ArticleEntity {
 
     }
 
+    public ArticleEntity(String title, String content, ProductEntity product) {
+        this.title = title;
+        this.content = content;
+        this.product = product;
+        this.dateCreated = new Date();
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -50,14 +55,6 @@ public class ArticleEntity {
     public void setProduct(ProductEntity product) {
         this.product = product;
     }
-
-//    public long getProductId() {
-//        return product.getId();
-//    }
-//
-//    public void setProductId(long productId) {
-//        this.product.setId(productId);
-//    }
 
     public ProductEntity getProduct() {
         return product;
@@ -81,5 +78,9 @@ public class ArticleEntity {
 
     public Date getDateCreated() {
         return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 }

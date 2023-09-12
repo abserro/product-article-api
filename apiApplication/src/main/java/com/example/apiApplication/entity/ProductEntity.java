@@ -1,6 +1,8 @@
 package com.example.apiApplication.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,7 +28,8 @@ public class ProductEntity {
     @Positive(message = "Cost must be a positive number")
     private Double cost;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
+    @JsonIgnore
     private List<ArticleEntity> articles;
 
     public ProductEntity() {
@@ -62,5 +65,9 @@ public class ProductEntity {
 
     public Double getCost() {
         return cost;
+    }
+
+    public List<ArticleEntity> getArticles() {
+        return articles;
     }
 }

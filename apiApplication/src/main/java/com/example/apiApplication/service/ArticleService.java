@@ -11,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 public class ArticleService implements IArticleService {
     private final IArticleRepository articleRepository;
     private final IProductRepository productRepository;
@@ -23,62 +22,82 @@ public class ArticleService implements IArticleService {
 
     @Override
     public ArticleEntity createArticle(ArticleEntity article) {
-        productRepository.findById(article.getProduct().getId()).orElseThrow(ProductNotFoundException::new);
-        return articleRepository.save(article);
+        ProductEntity product = productRepository.findById(article.getProduct().getId())
+                .orElseThrow(ProductNotFoundException::new);
+        ArticleEntity articleEntity = new ArticleEntity(article.getTitle(), article.getContent(), product);
+        product.getArticles().add(articleEntity);
+        return articleRepository.save(articleEntity);
     }
 
     @Override
     public ArticleEntity getArticleById(long id) {
-        return articleRepository.findById(id).orElseThrow(ArticleNotFoundException::new);
+        return articleRepository.findById(id)
+                .orElseThrow(ArticleNotFoundException::new);
     }
 
     @Override
     public ArticleEntity updateArticleById(long id, ArticleEntity updateArticle) {
-        ArticleEntity article = articleRepository.findById(id).orElseThrow(ArticleNotFoundException::new);
-        ProductEntity product = productRepository.findById(updateArticle.getProduct().getId()).orElseThrow(ProductNotFoundException::new);
+        ArticleEntity article = articleRepository.findById(id)
+                .orElseThrow(ArticleNotFoundException::new);
+        ProductEntity product = productRepository.findById(updateArticle.getProduct().getId())
+                .orElseThrow(ProductNotFoundException::new);
         article.setTitle(updateArticle.getTitle());
         article.setContent(updateArticle.getContent());
-        article.getProduct().setId(product.getId());
+        article.setProduct(product);
         return articleRepository.save(article);
     }
 
     @Override
     public boolean deleteArticleById(long id) {
-        ArticleEntity article = articleRepository.findById(id).orElseThrow(ArticleNotFoundException::new);
+        ArticleEntity article = articleRepository.findById(id)
+                .orElseThrow(ArticleNotFoundException::new);
         articleRepository.delete(article);
         return true;
     }
 
     @Override
     public List<ArticleEntity> getArticles(String sortField, String sortDirection) {
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortField);
+        Sort sort = createSort(sortField, sortDirection);
         return articleRepository.findAll(sort);
     }
 
     @Override
     public List<ArticleEntity> getArticlesByProductId(long productId, String sortField, String sortDirection) {
-        productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortField);
+        productRepository.findById(productId)
+                .orElseThrow(ProductNotFoundException::new);
         List<ArticleEntity> articles = new ArrayList<>();
-        for (ArticleEntity article : articleRepository.findAll(sort))
+        Sort sort = createSort(sortField, sortDirection);
+        for (ArticleEntity article : articleRepository.findAll(sort)) {
             if (article.getProduct().getId() == productId)
                 articles.add(article);
+        }
         return articles;
     }
 
     @Override
-    public List<ArticleEntity> getArticlesByDateCreated(Date min, Date max, String sortField, String sortDirection) {
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortField);
-        return articleRepository.findByDateCreatedBetween(min, max, sort);
+    public List<ArticleEntity> getArticlesByDateCreated(Date dateStart, Date dateEnd, String sortField, String sortDirection) {
+        Sort sort = createSort(sortField, sortDirection);
+        return articleRepository.findByDateCreatedBetween(dateStart, dateEnd, sort);
     }
 
     @Override
     public List<ArticleEntity> getArticlesByTitle(String title, String sortField, String sortDirection) {
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortField);
+        Sort sort = createSort(sortField, sortDirection);
         return articleRepository.findByTitle(title, sort);
+    }
+
+    @Override
+    public List<ArticleEntity> getArticlesByPhraseContent(String phrase, String sortField, String sortDirection) {
+        List<ArticleEntity> articles = new ArrayList<>();
+        Sort sort = createSort(sortField, sortDirection);
+        for (ArticleEntity article : articleRepository.findAll(sort)) {
+            if (article.getContent().contains(phrase.toLowerCase()))
+                articles.add(article);
+        }
+        return articles;
+    }
+
+    private Sort createSort(String sortField, String sortDirection){
+        return Sort.by(sortDirection.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
     }
 }

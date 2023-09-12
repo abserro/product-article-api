@@ -18,119 +18,117 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-@Tag(name = "Endpoints product")
+@Tag(name = "Product Endpoints")
 @RestController
-@RequestMapping(path = "api/products")
+@RequestMapping(path = "/api/products")
 public class ProductController {
     private final ProductService productService;
 
-    ProductController(IProductRepository productRepository, IArticleRepository articleRepository) {
+    public ProductController(IProductRepository productRepository, IArticleRepository articleRepository) {
         this.productService = new ProductService(productRepository, articleRepository);
     }
 
-    @Operation(summary = "Create a new Product")
+    @Operation(summary = "Create a new product")
     @PostMapping()
-    public ProductEntity createProduct(@RequestBody ProductEntity product) {
-        return productService.createProduct(product);
+    public ResponseEntity<ProductEntity> createProduct(@RequestBody ProductEntity product) {
+        ProductEntity createdProduct = productService.createProduct(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
 
-    @Operation(summary = "Get product id")
+    @Operation(summary = "Get a product by ID")
     @GetMapping("/{id}")
     public ResponseEntity<ProductEntity> getProductById(@PathVariable long id) {
         ProductEntity productEntity = productService.getProductById(id);
         return ResponseEntity.ok(productEntity);
     }
 
-    @Operation(summary = "Update product by id")
+    @Operation(summary = "Update a product by ID")
     @PutMapping("/{id}")
     public ResponseEntity<ProductEntity> updateProductById(@PathVariable long id, @RequestBody ProductEntity updateProduct) {
-        ProductEntity productEntity = productService.updateProductById(id, updateProduct);
-        return ResponseEntity.ok(productEntity);
+        ProductEntity updatedProduct = productService.updateProductById(id, updateProduct);
+        return ResponseEntity.ok(updatedProduct);
     }
 
-    @Operation(summary = "Delete product by id")
+    @Operation(summary = "Delete a product by ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProductById(@PathVariable long id) {
-        return productService.deleteProductById(id) ? ResponseEntity.noContent().build() : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return productService.deleteProductById(id) ? ResponseEntity.noContent().build() : ResponseEntity.badRequest().build();
     }
 
-    @Operation(summary = "Sorting all products (asc/desc) by field name")
+    @Operation(summary = "Get all products sorted by a field")
     @GetMapping
-    public ResponseEntity<List<ProductEntity>> getProducts(@RequestParam(required = false, defaultValue = "id") String sortField,
-                                                           @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-
-        if (!isFieldValid(sortField)) {
-            throw new FieldNotFoundException();
-        }
+    public ResponseEntity<List<ProductEntity>> getProducts(
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+        isFieldValid(sortField);
         List<ProductEntity> products = productService.getProducts(sortField, sortDirection);
         return ResponseEntity.ok(products);
     }
 
-    @Operation(summary = "Get all article by product_id (asc/desc)")
-    @GetMapping("/article/{product_id}")
-    public ResponseEntity<List<ArticleEntity>> getAllArticleByProductId(@PathVariable(name = "product_id") long productId,
-                                                                        @RequestParam(required = false, defaultValue = "id") String sortField,
-                                                                        @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        if (!isFieldValid(sortField)) {
-            throw new FieldNotFoundException();
-        }
-        List<ArticleEntity> article = productService.getArticleByProductId(productId, sortField, sortDirection);
-        return ResponseEntity.ok(article);
+    @Operation(summary = "Get all articles by product ID (asc/desc)")
+    @GetMapping("/article/{productId}")
+    public ResponseEntity<List<ArticleEntity>> getArticlesByProductId(
+            @PathVariable(name = "productId") long productId,
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+        isFieldValid(sortField);
+        List<ArticleEntity> articles = productService.getArticlesByProductId(productId, sortField, sortDirection);
+        return articles.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(articles);
     }
 
-    @Operation(summary = "Get all product by filter cost (min, max)")
+    @Operation(summary = "Get all products by cost range")
     @GetMapping("/cost/range")
-    public ResponseEntity<List<ProductEntity>> getAllProductByCostRange(@RequestParam double min,
-                                                                        @RequestParam double max,
-                                                                        @RequestParam(required = false, defaultValue = "id") String sortField,
-                                                                        @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        if (!isFieldValid(sortField)) {
-            throw new FieldNotFoundException();
-        }
-        List<ProductEntity> product = productService.getProductByCostRange(min, max, sortField, sortDirection);
-        return ResponseEntity.ok(product);
+    public ResponseEntity<List<ProductEntity>> getProductsByCostRange(
+            @RequestParam double min,
+            @RequestParam double max,
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+        isFieldValid(sortField);
+        List<ProductEntity> products = productService.getProductsByCostRange(min, max, sortField, sortDirection);
+        return products.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(products);
     }
 
     @Operation(summary = "Get products by title")
     @GetMapping("/findByTitle/{title}")
-    public ResponseEntity<List<ProductEntity>> getAllProductByTitle(@PathVariable String title,
-                                                                    @RequestParam(required = false, defaultValue = "id") String sortField,
-                                                                    @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        if (!isFieldValid(sortField)) {
-            throw new FieldNotFoundException();
-        }
-        List<ProductEntity> products = productService.getProductByTitle(title, sortField, sortDirection);
-        return ResponseEntity.ok(products);
+    public ResponseEntity<List<ProductEntity>> getProductsByTitle(
+            @PathVariable String title,
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+        isFieldValid(sortField);
+        List<ProductEntity> products = productService.getProductsByTitle(title, sortField, sortDirection);
+        return products.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(products);
     }
 
-    @Operation(summary = "Get products by word in description")
-    @GetMapping("/findBy/{phrase}")
-    public ResponseEntity<List<ProductEntity>> getProductByPhraseDescription(@PathVariable String phrase,
-                                                                             @RequestParam(required = false, defaultValue = "id") String sortField,
-                                                                             @RequestParam(required = false, defaultValue = "asc") String sortDirection){
-        if (phrase.isEmpty())
+    @Operation(summary = "Get products by phrase in description")
+    @GetMapping("/findByPhrase/{phrase}")
+    public ResponseEntity<List<ProductEntity>> getProductsByPhraseDescription(
+            @PathVariable String phrase,
+            @RequestParam(required = false, defaultValue = "id") String sortField,
+            @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+        if (phrase.isBlank())
             return ResponseEntity.noContent().build();
-        List<ProductEntity> products = productService.getProductByPhraseDescription(phrase, sortField, sortDirection);
-        return ResponseEntity.ok(products);
+        List<ProductEntity> products = productService.getProductsByPhraseDescription(phrase, sortField, sortDirection);
+        return products.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(products);
     }
 
-    private Boolean isFieldValid(String field) {
+    private void isFieldValid(String field) {
         List<String> fields = Arrays.asList("id", "title", "description", "cost");
-        return fields.contains(field.toLowerCase());
+        if (!fields.contains(field.toLowerCase()))
+            throw new FieldNotFoundException();
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleProductException(ProductNotFoundException e) {
+    private ResponseEntity<ErrorResponse> handleProductNotFoundException(ProductNotFoundException e) {
         Date currentDate = new Date();
         ErrorResponse response = new ErrorResponse(
-                "The product with this id wasn't found!",
+                "The product with this ID wasn't found!",
                 currentDate
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleFieldException(FieldNotFoundException e) {
+    private ResponseEntity<ErrorResponse> handleFieldNotFoundException(FieldNotFoundException e) {
         Date currentDate = new Date();
         ErrorResponse response = new ErrorResponse(
                 "The field wasn't found!",
@@ -139,3 +137,4 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
+
