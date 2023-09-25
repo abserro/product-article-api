@@ -1,5 +1,6 @@
 package com.example.apiApplication.controller;
 
+import com.example.apiApplication.ArticleResponseEntity;
 import com.example.apiApplication.entity.ArticleEntity;
 import com.example.apiApplication.repository.IArticleRepository;
 import com.example.apiApplication.repository.IProductRepository;
@@ -38,9 +39,10 @@ public class ArticleController {
 
     @Operation(summary = "Get an article by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<ArticleEntity> getArticleById(@PathVariable long id) {
+    public ResponseEntity<ArticleResponseEntity> getArticleById(@PathVariable long id) {
         ArticleEntity articleEntity = articleService.getArticleById(id);
-        return ResponseEntity.ok(articleEntity);
+        ArticleResponseEntity articleResponseEntity = new ArticleResponseEntity(articleEntity);
+        return ResponseEntity.ok(articleResponseEntity);
     }
 
     @Operation(summary = "Update an article by ID")
